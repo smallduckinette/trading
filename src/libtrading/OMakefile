@@ -1,0 +1,7 @@
+LIBFILES[] =
+	$(removesuffix $(glob *.cpp))
+
+LIB = ../lib/libtrading
+
+.DEFAULT: $(StaticCLibrary $(LIB), $(LIBFILES))
+.DEFAULT: $(DynamicCLibrary $(LIB), $(LIBFILES))
