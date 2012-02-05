@@ -1,0 +1,12 @@
+LDFLAGS += -lboost_unit_test_framework-mt
+
+LIBS[] +=
+	../lib/libtrading
+
+FILES[] = 
+	$(removesuffix $(glob *.cpp))
+
+CXXProgram(../bin/unittests, $(FILES))
+
+.DEFAULT: ../bin/unittests$(EXE)
+	../bin/unittests$(EXE)
