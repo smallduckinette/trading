@@ -6,37 +6,22 @@ trading::Market::Market(const std::string & description):
 {
 }
 
-void trading::Market::registerListing(std::unique_ptr<Listing> listing)
+void trading::Market::registerListing(const std::shared_ptr<Listing> & listing)
 {
-  InstrumentId instrumentId;
-  _listingMap.insert(std::make_pair(instrumentId, std::move(listing)));
+  std::unique_lock<std::mutex> lock(_mutex);
+  _listingMap.insert(std::make_pair(listing->getInstrumentId(), listing));
 }
 
-void trading::Market::addOrder(const Order & order)
+std::shared_ptr<trading::Listing> trading::Market::getListing(const InstrumentId & instrumentId)
 {
-  ListingMapT::iterator it = _listingMap.find(order.getInstrumentId());
+  std::unique_lock<std::mutex> lock(_mutex);
+  ListingMapT::const_iterator it = _listingMap.find(instrumentId);
   if(it != _listingMap.end())
   {
-    it->second->addOrder(order);
+    return it->second;
   }
-}
-
-void trading::Market::updateOrder(const OrderId & orderId, 
-                                  const Order & order)
-{
-  ListingMapT::iterator it = _listingMap.find(order.getInstrumentId());
-  if(it != _listingMap.end())
+  else
   {
-    it->second->updateOrder(orderId, order);
-  }
-}
-
-void trading::Market::cancelOrder(const OrderId & orderId,
-                                  const InstrumentId & instrumentId)
-{
-  ListingMapT::iterator it = _listingMap.find(instrumentId);
-  if(it != _listingMap.end())
-  {
-    it->second->cancelOrder(orderId);
+    throw std::runtime_error("Unknown listing");
   }
 }

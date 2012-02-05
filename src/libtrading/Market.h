@@ -3,6 +3,7 @@
 
 #include <string>
 #include <memory>
+#include <thread>
 #include <unordered_map>
 
 #include "Instrument.h"
@@ -16,20 +17,16 @@ namespace trading
   {
   public:
     Market(const std::string & description);
-
-    // Thread unsafe - Only to be called during initialisation
-    void registerListing(std::unique_ptr<Listing> listing);
     
-    void addOrder(const Order & order);
-    void updateOrder(const OrderId & orderId, 
-                     const Order & order);
-    void cancelOrder(const OrderId & orderId,
-                     const InstrumentId & instrumentId);
+    void registerListing(const std::shared_ptr<Listing> & listing);
+    std::shared_ptr<Listing> getListing(const InstrumentId & instrumentId);
     
   private:
     std::string _description;
+    std::mutex _mutex;
     
-    typedef std::unordered_map<InstrumentId, std::unique_ptr<Listing> > ListingMapT;
+    // Protected by the mutex
+    typedef std::unordered_map<InstrumentId, std::shared_ptr<Listing> > ListingMapT;
     ListingMapT _listingMap;
   };
 }

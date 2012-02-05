@@ -5,12 +5,16 @@ trading::Order::Order(const OrderId & orderId,
                       const InstrumentId & instrumentId,
                       const TraderId & traderId,
                       const Price & price,
-                      const Quantity & quantity):
+                      const Quantity & quantity,
+                      SideT side,
+                      const TimePointT & creationTime):
   _orderId(orderId),
   _instrumentId(instrumentId),
   _traderId(traderId),
   _price(price),
-  _quantity(quantity)
+  _quantity(quantity),
+  _side(side),
+  _creationTime(creationTime)
 {
 }
 
@@ -37,4 +41,14 @@ trading::Price trading::Order::getPrice() const
 trading::Quantity trading::Order::getQuantity() const
 {
   return _quantity;
+}
+
+trading::Order::SideT trading::Order::getSide() const
+{
+  return _side;
+}
+
+trading::TimePointT trading::Order::getCreationTime() const
+{
+  return _creationTime;
 }

@@ -59,17 +59,11 @@ private:
   T m_value;
 };
 
-namespace std
+template<typename D, typename T>
+size_t hash_value(const StrongId<D, T> & id)
 {
-  template<typename D, typename T>
-  struct hash<StrongId<D, T> >
-  {
-    std::size_t operator()(const StrongId<D, T> & id) const
-    {
-      hash<T> hash;
-      return hash(id.getValue());
-    }
-  };
+  std::hash<T> hash;
+  return hash(id.getValue());
 }
 
 template<typename D, typename T>
