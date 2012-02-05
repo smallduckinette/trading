@@ -3,5 +3,4 @@ LIBFILES[] =
 
 LIB = ../lib/libtrading
 
-.DEFAULT: $(StaticCLibrary $(LIB), $(LIBFILES))
-.DEFAULT: $(DynamicCLibrary $(LIB), $(LIBFILES))
+StaticCLibrary($(LIB), $(LIBFILES))
