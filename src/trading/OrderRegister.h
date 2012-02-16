@@ -18,6 +18,9 @@ namespace trading
     void insertOrder(const std::shared_ptr<Order> & order);
     void deleteOrder(const OrderId & orderId);
     
+    std::shared_ptr<Order> getBestBid() const;
+    std::shared_ptr<Order> getBestOffer() const;
+
   private:
     struct Item
     {
@@ -28,17 +31,17 @@ namespace trading
       OrderId getOrderId() const;
       TraderId getTraderId() const;
       
-    private:
       std::shared_ptr<Order> _order;
     };
     
+    struct ByPrice {};
     struct ByOrder {};
     struct ByTrader {};
     
     typedef boost::multi_index_container<
       Item,
       boost::multi_index::indexed_by<
-        boost::multi_index::ordered_unique<boost::multi_index::identity<Item> >,
+        boost::multi_index::ordered_unique<boost::multi_index::tag<ByPrice>, boost::multi_index::identity<Item> >,
         boost::multi_index::hashed_unique<boost::multi_index::tag<ByOrder>, boost::multi_index::const_mem_fun<Item, OrderId, &Item::getOrderId> >,
         boost::multi_index::ordered_non_unique<boost::multi_index::tag<ByTrader>, boost::multi_index::const_mem_fun<Item, TraderId, &Item::getTraderId> >
         > 

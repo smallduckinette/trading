@@ -12,6 +12,34 @@ void trading::OrderRegister::deleteOrder(const OrderId & orderId)
   _orders.get<ByOrder>().erase(orderId);
 }
 
+std::shared_ptr<trading::Order> trading::OrderRegister::getBestBid() const
+{
+  auto it = _orders.get<ByPrice>().rbegin();
+  auto end = _orders.get<ByPrice>().rend();
+  if(it != end && it->_order->getSide() == Order::BID)
+  {
+    return it->_order;
+  }
+  else
+  {
+    return std::shared_ptr<Order>();
+  }
+}
+
+std::shared_ptr<trading::Order> trading::OrderRegister::getBestOffer() const
+{
+  auto it = _orders.get<ByPrice>().begin();
+  auto end = _orders.get<ByPrice>().end();
+  if(it != end && it->_order->getSide() == Order::OFFER)
+  {
+    return it->_order;
+  }
+  else
+  {
+    return std::shared_ptr<Order>();
+  }
+}
+
 trading::OrderRegister::Item::Item(const std::shared_ptr<Order> & order):
   _order(order)
 {
