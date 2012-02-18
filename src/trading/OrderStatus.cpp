@@ -1,36 +1,20 @@
 #include "OrderStatus.h"
 
 
-trading::OrderStatus::OrderStatus(const OrderId & orderId,
-                                  const InstrumentId & instrumentId,
-                                  const Price & price,
+trading::OrderStatus::OrderStatus(const std::shared_ptr<Order> & order,
                                   Status status,
-                                  const Quantity & initialQuantity,
-                                  const Quantity & remainingQuantity,
+                                  const std::string & text,
                                   const Quantity & filledQuantity):
-  _orderId(orderId),
-  _instrumentId(instrumentId),
-  _price(price),
+  _order(order),
   _status(status),
-  _initialQuantity(initialQuantity),
-  _remainingQuantity(remainingQuantity),
+  _text(text),
   _filledQuantity(filledQuantity)
 {
 }
 
-trading::OrderId trading::OrderStatus::getOrderId() const
+std::shared_ptr<trading::Order> trading::OrderStatus::getOrder() const
 {
-  return _orderId;
-}
-
-trading::InstrumentId trading::OrderStatus::getInstrumentId() const
-{
-  return _instrumentId;
-}
-
-trading::Price trading::OrderStatus::getPrice() const
-{
-  return _price;
+  return _order;
 }
 
 trading::OrderStatus::Status trading::OrderStatus::getStatus() const
@@ -38,14 +22,9 @@ trading::OrderStatus::Status trading::OrderStatus::getStatus() const
   return _status;
 }
 
-trading::Quantity trading::OrderStatus::getInitialQuantity() const
+std::string trading::OrderStatus::getText() const
 {
-  return _initialQuantity;
-}
-
-trading::Quantity trading::OrderStatus::getRemainingQuantity() const
-{
-  return _remainingQuantity;
+  return _text;
 }
 
 trading::Quantity trading::OrderStatus::getFilledQuantity() const

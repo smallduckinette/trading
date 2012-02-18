@@ -6,6 +6,8 @@
 #include <boost/asio.hpp>
 
 #include "Listing.h"
+#include "OrderInfo.h"
+#include "OrderRegister.h"
 
 namespace trading
 {
@@ -19,21 +21,20 @@ namespace trading
     // Thread safe interface
     InstrumentId getInstrumentId() const;
     
-    void addOrder(const Order & order,
-                  const std::shared_ptr<OrderListener> & orderListener);
+    void addOrder(const OrderInfo & orderInfo);
     void updateOrder(const OrderId & orderId, 
-                     const Order & order);
+                     const OrderInfo & orderInfo);
     void cancelOrder(const OrderId & orderId);
     
   private:
-    void doAddOrder(const Order & order,
-                    const std::shared_ptr<OrderListener> & orderListener);
+    void doAddOrder(const OrderInfo & orderInfo);
     void doUpdateOrder(const OrderId & orderId, 
-                       const Order & order);
+                       const OrderInfo & orderInfo);
     void doCancelOrder(const OrderId & orderId); 
     
     boost::asio::io_service::strand _strand;
     InstrumentId _instrumentId;
+    OrderRegister _orderRegister;
   };
 }
 

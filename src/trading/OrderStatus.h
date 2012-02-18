@@ -1,10 +1,15 @@
 #ifndef __LIBTRADING_ORDERSTATUS_H__
 #define __LIBTRADING_ORDERSTATUS_H__
 
-#include "Order.h"
+#include <memory>
+#include <string>
+
+#include "Quantity.h"
 
 namespace trading
 {
+  class Order;
+
   class OrderStatus
   {
   public:
@@ -16,29 +21,20 @@ namespace trading
         ERRORED
       };
 
-    OrderStatus(const OrderId & orderId,
-                const InstrumentId & instrumentId,
-                const Price & price,
+    OrderStatus(const std::shared_ptr<Order> & order,
                 Status status,
-                const Quantity & initialQuantity,
-                const Quantity & remainingQuantity,
+                const std::string & text,
                 const Quantity & filledQuantity);
-    
-    OrderId getOrderId() const;
-    InstrumentId getInstrumentId() const;
-    Price getPrice() const;
+
+    std::shared_ptr<Order> getOrder() const;
     Status getStatus() const;
-    Quantity getInitialQuantity() const;
-    Quantity getRemainingQuantity() const;
+    std::string getText() const;
     Quantity getFilledQuantity() const;
 
   private:
-    OrderId _orderId;
-    InstrumentId _instrumentId;
-    Price _price;
+    std::shared_ptr<Order> _order;
     Status _status;
-    Quantity _initialQuantity;
-    Quantity _remainingQuantity;
+    std::string _text;
     Quantity _filledQuantity;
   };
 }

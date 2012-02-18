@@ -9,29 +9,30 @@
 #include <boost/multi_index/mem_fun.hpp>
 
 #include "Order.h"
+#include "OrderInfo.h"
 
 namespace trading
 {  
   class OrderRegister
   {
   public:
-    void insertOrder(const std::shared_ptr<Order> & order);
-    void deleteOrder(const OrderId & orderId);
+    void insertOrder(const OrderInfo & orderInfo);
+    bool removeOrder(const OrderId & orderId, OrderInfo & orderInfo);
     
-    std::shared_ptr<Order> getBestBid() const;
-    std::shared_ptr<Order> getBestOffer() const;
-
+    bool getBestBid(OrderInfo & orderInfo) const;
+    bool getBestOffer(OrderInfo & orderInfo) const;
+    
   private:
     struct Item
     {
-      Item(const std::shared_ptr<Order> & order);
+      Item(const OrderInfo & orderInfo);
       
       bool operator<(const Item & other) const;
       
       OrderId getOrderId() const;
       TraderId getTraderId() const;
       
-      std::shared_ptr<Order> _order;
+      OrderInfo _orderInfo;
     };
     
     struct ByPrice {};

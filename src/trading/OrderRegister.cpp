@@ -2,75 +2,87 @@
 
 
 
-void trading::OrderRegister::insertOrder(const std::shared_ptr<Order> & order)
+void trading::OrderRegister::insertOrder(const OrderInfo & orderInfo)
 {
-  _orders.insert(Item(order));
+  _orders.insert(orderInfo);
 }
 
-void trading::OrderRegister::deleteOrder(const OrderId & orderId)
+bool trading::OrderRegister::removeOrder(const OrderId & orderId, OrderInfo & orderInfo)
 {
-  _orders.get<ByOrder>().erase(orderId);
+  auto it = _orders.get<ByOrder>().find(orderId);
+  if(it != _orders.get<ByOrder>().end())
+  {
+    orderInfo = it->_orderInfo;
+    _orders.get<ByOrder>().erase(it);
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
-std::shared_ptr<trading::Order> trading::OrderRegister::getBestBid() const
+bool trading::OrderRegister::getBestBid(OrderInfo & orderInfo) const
 {
   auto it = _orders.get<ByPrice>().rbegin();
   auto end = _orders.get<ByPrice>().rend();
-  if(it != end && it->_order->getSide() == Order::BID)
+  if(it != end && it->_orderInfo.getOrder()->getSide() == Order::BID)
   {
-    return it->_order;
+    orderInfo = it->_orderInfo;
+    return true;
   }
   else
   {
-    return std::shared_ptr<Order>();
+    return false;
   }
 }
 
-std::shared_ptr<trading::Order> trading::OrderRegister::getBestOffer() const
+bool trading::OrderRegister::getBestOffer(OrderInfo & orderInfo) const
 {
   auto it = _orders.get<ByPrice>().begin();
   auto end = _orders.get<ByPrice>().end();
-  if(it != end && it->_order->getSide() == Order::OFFER)
+  if(it != end && it->_orderInfo.getOrder()->getSide() == Order::OFFER)
   {
-    return it->_order;
+    orderInfo = it->_orderInfo;
+    return true;
   }
   else
   {
-    return std::shared_ptr<Order>();
+    return false;
   }
 }
 
-trading::OrderRegister::Item::Item(const std::shared_ptr<Order> & order):
-  _order(order)
+trading::OrderRegister::Item::Item(const OrderInfo & orderInfo):
+  _orderInfo(orderInfo)
 {
 }
 
 trading::OrderId trading::OrderRegister::Item::getOrderId() const
 {
-  return _order->getOrderId();
+  return _orderInfo.getOrder()->getOrderId();
 }
 
 trading::TraderId trading::OrderRegister::Item::getTraderId() const
 {
-  return _order->getTraderId();
+  return _orderInfo.getOrder()->getTraderId();
 }
 
 bool trading::OrderRegister::Item::operator<(const Item & other) const
 {
-  if(_order->getSide() < other._order->getSide())
+  if(_orderInfo.getOrder()->getSide() < other._orderInfo.getOrder()->getSide())
     return false;
-  if(_order->getSide() > other._order->getSide())
+  if(_orderInfo.getOrder()->getSide() > other._orderInfo.getOrder()->getSide())
     return true;
 
-  if(_order->getPrice() < other._order->getPrice())
+  if(_orderInfo.getOrder()->getPrice() < other._orderInfo.getOrder()->getPrice())
     return true;
-  if(_order->getPrice() > other._order->getPrice())
+  if(_orderInfo.getOrder()->getPrice() > other._orderInfo.getOrder()->getPrice())
     return false;
 
-  if(_order->getCreationTime() < other._order->getCreationTime())
+  if(_orderInfo.getOrder()->getCreationTime() < other._orderInfo.getOrder()->getCreationTime())
     return true;
-  if(_order->getCreationTime() > other._order->getCreationTime())
+  if(_orderInfo.getOrder()->getCreationTime() > other._orderInfo.getOrder()->getCreationTime())
     return false;
 
-  return(_order->getOrderId() < other._order->getOrderId());
+  return(_orderInfo.getOrder()->getOrderId() < other._orderInfo.getOrder()->getOrderId());
 }
