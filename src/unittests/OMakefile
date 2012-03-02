@@ -1,4 +1,4 @@
-LDFLAGS += -lboost_unit_test_framework-mt
+LDFLAGS += -lboost_unit_test_framework-mt -lboost_system-mt
 
 LIBS[] +=
 	../lib/libtrading

@@ -1,6 +1,8 @@
 #include <boost/test/auto_unit_test.hpp>
 #include "trading/OrderRegister.h"
 
+#include "Utils.h"
+
 namespace
 {
   void addBid(trading::OrderRegister & orderRegister,
@@ -8,31 +10,15 @@ namespace
               const trading::Price & price,
               const trading::Quantity & quantity)
   {
-    orderRegister.insertOrder(trading::OrderInfo(std::make_shared<trading::Order>(orderId,
-                                                                                  trading::InstrumentId(1),
-                                                                                  trading::TraderId(1),
-                                                                                  price,
-                                                                                  quantity,
-                                                                                  trading::Order::BID,
-                                                                                  trading::TimePointT()),
-                                                 std::shared_ptr<trading::OrderListener>(),
-                                                 trading::Quantity()));
+    orderRegister.insertOrder(createBid(orderId, price, quantity));
   }
 
   void addOffer(trading::OrderRegister & orderRegister,
-              const trading::OrderId & orderId,
-              const trading::Price & price,
-              const trading::Quantity & quantity)
+                const trading::OrderId & orderId,
+                const trading::Price & price,
+                const trading::Quantity & quantity)
   {
-    orderRegister.insertOrder(trading::OrderInfo(std::make_shared<trading::Order>(orderId,
-                                                                                  trading::InstrumentId(1),
-                                                                                  trading::TraderId(1),
-                                                                                  price,
-                                                                                  quantity,
-                                                                                  trading::Order::OFFER,
-                                                                                  trading::TimePointT()),
-                                                 std::shared_ptr<trading::OrderListener>(),
-                                                 trading::Quantity()));
+    orderRegister.insertOrder(createOffer(orderId, price, quantity));
   }
 }
 

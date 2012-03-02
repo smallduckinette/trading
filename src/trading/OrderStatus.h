@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 
+#include "Order.h"
 #include "Quantity.h"
 
 namespace trading
@@ -20,22 +21,30 @@ namespace trading
         CANCELLED,
         ERRORED
       };
-
-    OrderStatus(const std::shared_ptr<Order> & order,
+    
+    OrderStatus(const OrderId & orderId,
                 Status status,
                 const std::string & text,
-                const Quantity & filledQuantity);
+                const Quantity & initialQuantity,
+                const Quantity & filledQuantity,
+                const Quantity & remainingQuantity);
 
-    std::shared_ptr<Order> getOrder() const;
+    OrderId getOrderId() const;
     Status getStatus() const;
     std::string getText() const;
+    Quantity getInitialQuantity() const;
     Quantity getFilledQuantity() const;
-
+    Quantity getRemainingQuantity() const;
+    
+    bool operator==(const OrderStatus & orderStatus) const;
+    
   private:
-    std::shared_ptr<Order> _order;
+    OrderId _orderId;
     Status _status;
     std::string _text;
+    Quantity _initialQuantity;
     Quantity _filledQuantity;
+    Quantity _remainingQuantity;
   };
 }
 
