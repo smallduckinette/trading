@@ -28,6 +28,9 @@ namespace trading
     void doAddOrder(const OrderInfo & orderInfo);
     void doCancelOrder(const OrderId & orderId); 
     
+    bool isMatching(const OrderInfo & aggressor, const OrderInfo & initiator) const;
+    void match(OrderInfo & aggressor, OrderInfo & initiator);
+    
     boost::asio::io_service::strand _strand;
     InstrumentId _instrumentId;
     OrderRegister _orderRegister;

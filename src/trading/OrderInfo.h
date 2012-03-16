@@ -15,17 +15,19 @@ namespace trading
   public:
     OrderInfo();
     OrderInfo(const std::shared_ptr<Order> & order,
-              const std::shared_ptr<OrderListener> & orderListener,
-              const Quantity & quantity);
+              const std::shared_ptr<OrderListener> & orderListener);
     
     std::shared_ptr<Order> getOrder() const;
     std::shared_ptr<OrderListener> getOrderListener() const;
-    Quantity getQuantity() const;
-
+    Quantity getOpenQuantity() const;
+    Quantity getTradedQuantity() const;
+    void tradeQuantity(const Quantity & tradedQuantity);
+    
   private:
     std::shared_ptr<Order> _order;
     std::shared_ptr<OrderListener> _orderListener;
-    Quantity _quantity;
+    Quantity _openQuantity;
+    Quantity _tradedQuantity;
   };
 }
 

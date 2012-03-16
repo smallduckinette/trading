@@ -26,7 +26,7 @@ bool trading::OrderRegister::getBestBid(OrderInfo & orderInfo) const
 {
   auto it = _orders.get<ByPrice>().rbegin();
   auto end = _orders.get<ByPrice>().rend();
-  if(it != end && it->_orderInfo.getOrder()->getSide() == Order::BID)
+  if(it != end && it->_orderInfo.getOrder()->getSide() == Side::BID)
   {
     orderInfo = it->_orderInfo;
     return true;
@@ -41,7 +41,7 @@ bool trading::OrderRegister::getBestOffer(OrderInfo & orderInfo) const
 {
   auto it = _orders.get<ByPrice>().begin();
   auto end = _orders.get<ByPrice>().end();
-  if(it != end && it->_orderInfo.getOrder()->getSide() == Order::OFFER)
+  if(it != end && it->_orderInfo.getOrder()->getSide() == Side::OFFER)
   {
     orderInfo = it->_orderInfo;
     return true;
@@ -49,6 +49,19 @@ bool trading::OrderRegister::getBestOffer(OrderInfo & orderInfo) const
   else
   {
     return false;
+  }
+}
+
+bool trading::OrderRegister::getBest(Side::Enum side, OrderInfo & orderInfo) const
+{
+  switch(side)
+  {
+  case Side::BID:
+    return getBestBid(orderInfo);
+  case Side::OFFER:
+    return getBestOffer(orderInfo);
+  default:
+    throw std::runtime_error("Bad order side");
   }
 }
 

@@ -21,6 +21,7 @@ namespace trading
     
     bool getBestBid(OrderInfo & orderInfo) const;
     bool getBestOffer(OrderInfo & orderInfo) const;
+    bool getBest(Side::Enum side, OrderInfo & orderInfo) const;
     
   private:
     struct Item

@@ -8,6 +8,7 @@
 #include "Trader.h"
 #include "Price.h"
 #include "Quantity.h"
+#include "Side.h"
 
 namespace trading
 {
@@ -19,18 +20,12 @@ namespace trading
   class Order
   {
   public:
-    enum SideT
-      {
-        BID,
-        OFFER
-      };
-
     Order(const OrderId & orderId,
           const InstrumentId & instrumentId,
           const TraderId & traderId,
           const Price & price,
           const Quantity & quantity,
-          SideT side,
+          Side::Enum side,
           const TimePointT & creationTime);
 
     OrderId getOrderId() const;
@@ -38,7 +33,7 @@ namespace trading
     TraderId getTraderId() const;
     Price getPrice() const;
     Quantity getQuantity() const;
-    SideT getSide() const;
+    Side::Enum getSide() const;
     TimePointT getCreationTime() const;
     
   private:
@@ -47,7 +42,7 @@ namespace trading
     TraderId _traderId;
     Price _price;
     Quantity _quantity;
-    SideT _side;
+    Side::Enum _side;
     TimePointT _creationTime;
   };
 }

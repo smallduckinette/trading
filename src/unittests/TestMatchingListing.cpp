@@ -50,9 +50,9 @@ BOOST_AUTO_TEST_CASE(TestMatchingListingInsertRemove)
   BOOST_CHECK(trading::OrderStatus(trading::OrderId(1),
                                    trading::OrderStatus::CANCELLED,
                                    "Cancelled", 
+                                   trading::Quantity(5),
                                    trading::Quantity(0),
-                                   trading::Quantity(0),
-                                   trading::Quantity(0)) ==
+                                   trading::Quantity(5)) ==
               orderListener->_orderStatus.at(1));  
 }
 

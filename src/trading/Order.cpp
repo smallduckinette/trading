@@ -6,7 +6,7 @@ trading::Order::Order(const OrderId & orderId,
                       const TraderId & traderId,
                       const Price & price,
                       const Quantity & quantity,
-                      SideT side,
+                      Side::Enum side,
                       const TimePointT & creationTime):
   _orderId(orderId),
   _instrumentId(instrumentId),
@@ -43,7 +43,7 @@ trading::Quantity trading::Order::getQuantity() const
   return _quantity;
 }
 
-trading::Order::SideT trading::Order::getSide() const
+trading::Side::Enum trading::Order::getSide() const
 {
   return _side;
 }

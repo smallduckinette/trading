@@ -39,8 +39,8 @@ void trading::MatchingListing::doAddOrder(const OrderInfo & orderInfo)
                                                             OrderStatus::ACCEPTED,
                                                             "Accepted",
                                                             orderInfo.getOrder()->getQuantity(),
-                                                            Quantity(0),
-                                                            orderInfo.getOrder()->getQuantity()));
+                                                            orderInfo.getTradedQuantity(),
+                                                            orderInfo.getOpenQuantity()));
   }
   else
   {
@@ -61,8 +61,24 @@ void trading::MatchingListing::doCancelOrder(const OrderId & orderId)
     orderInfo.getOrderListener()->onOrderStatus(OrderStatus(orderId,
                                                             OrderStatus::CANCELLED,
                                                             "Cancelled",
-                                                            Quantity(0),
-                                                            Quantity(0),
-                                                            Quantity(0)));
+                                                            orderInfo.getOrder()->getQuantity(),
+                                                            orderInfo.getTradedQuantity(),
+                                                            orderInfo.getOpenQuantity()));
   }
+}
+
+bool trading::MatchingListing::isMatching(const OrderInfo & aggressor, const OrderInfo & initiator) const
+{
+  assert(aggressor.getOrder()->getSide() != initiator.getOrder()->getSide());
+  return((aggressor.getOrder()->getSide() == Side::BID && aggressor.getOrder()->getPrice() >= initiator.getOrder()->getPrice())
+         ||(aggressor.getOrder()->getSide() == Side::OFFER && aggressor.getOrder()->getPrice() <= initiator.getOrder()->getPrice()));
+}
+
+void trading::MatchingListing::match(OrderInfo & aggressor, OrderInfo & initiator)
+{
+  assert(aggressor.getOrder()->getSide() != initiator.getOrder()->getSide());
+  Quantity tradedQuantity = std::min(aggressor.getOpenQuantity(), initiator.getOpenQuantity());
+  //Price price = initiator.getOrder()->getPrice();
+  aggressor.tradeQuantity(tradedQuantity);
+  initiator.tradeQuantity(tradedQuantity);
 }

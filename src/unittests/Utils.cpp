@@ -10,10 +10,9 @@ trading::OrderInfo createBid(const trading::OrderId & orderId,
                                                              trading::TraderId(1),
                                                              price,
                                                              quantity,
-                                                             trading::Order::BID,
+                                                             trading::Side::BID,
                                                              trading::TimePointT()),
-                            orderListener,
-                            trading::Quantity());
+                            orderListener);
 }
 
 trading::OrderInfo createOffer(const trading::OrderId & orderId,
@@ -26,8 +25,7 @@ trading::OrderInfo createOffer(const trading::OrderId & orderId,
                                                              trading::TraderId(1),
                                                              price,
                                                              quantity,
-                                                             trading::Order::OFFER,
+                                                             trading::Side::OFFER,
                                                              trading::TimePointT()),
-                            orderListener,
-                            trading::Quantity());
+                            orderListener);
 }
