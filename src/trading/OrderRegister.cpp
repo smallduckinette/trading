@@ -22,6 +22,11 @@ bool trading::OrderRegister::removeOrder(const OrderId & orderId, OrderInfo & or
   }
 }
 
+void trading::OrderRegister::eraseOrder(const OrderId & orderId)
+{
+  _orders.get<ByOrder>().erase(orderId);
+}
+
 bool trading::OrderRegister::getBestBid(OrderInfo & orderInfo) const
 {
   auto it = _orders.get<ByPrice>().rbegin();

@@ -11,6 +11,8 @@ namespace trading
         BID,
         OFFER
       };
+
+    static Enum reverse(Enum side);
   };
 }
 

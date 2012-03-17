@@ -18,11 +18,13 @@ namespace trading
   public:
     void insertOrder(const OrderInfo & orderInfo);
     bool removeOrder(const OrderId & orderId, OrderInfo & orderInfo);
+    void eraseOrder(const OrderId & orderId);
+    bool updateOrder(OrderInfo & orderInfo);
     
     bool getBestBid(OrderInfo & orderInfo) const;
     bool getBestOffer(OrderInfo & orderInfo) const;
     bool getBest(Side::Enum side, OrderInfo & orderInfo) const;
-    
+
   private:
     struct Item
     {

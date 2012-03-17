@@ -6,6 +6,7 @@
 
 #include "Order.h"
 #include "Quantity.h"
+#include "Price.h"
 
 namespace trading
 {
@@ -17,9 +18,10 @@ namespace trading
     enum Status
       {
         ACCEPTED,
-        COMPLETED,
+        PARTIAL_FILL,
+        FILL,
         CANCELLED,
-        ERRORED
+        REJECTED
       };
     
     OrderStatus(const OrderId & orderId,
@@ -27,7 +29,8 @@ namespace trading
                 const std::string & text,
                 const Quantity & initialQuantity,
                 const Quantity & filledQuantity,
-                const Quantity & remainingQuantity);
+                const Quantity & remainingQuantity,
+                const Price & cashValue);
 
     OrderId getOrderId() const;
     Status getStatus() const;
@@ -35,6 +38,7 @@ namespace trading
     Quantity getInitialQuantity() const;
     Quantity getFilledQuantity() const;
     Quantity getRemainingQuantity() const;
+    Price getCashValue() const;
     
     bool operator==(const OrderStatus & orderStatus) const;
     
@@ -45,7 +49,10 @@ namespace trading
     Quantity _initialQuantity;
     Quantity _filledQuantity;
     Quantity _remainingQuantity;
+    Price _cashValue;
   };
+
+  std::ostream & operator<<(std::ostream & str, const OrderStatus & orderStatus);
 }
 
 #endif

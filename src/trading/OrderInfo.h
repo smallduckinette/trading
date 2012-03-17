@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "Quantity.h"
+#include "Price.h"
 
 namespace trading
 {
@@ -18,16 +19,20 @@ namespace trading
               const std::shared_ptr<OrderListener> & orderListener);
     
     std::shared_ptr<Order> getOrder() const;
-    std::shared_ptr<OrderListener> getOrderListener() const;
     Quantity getOpenQuantity() const;
     Quantity getTradedQuantity() const;
-    void tradeQuantity(const Quantity & tradedQuantity);
+    
+    void onInsert() const;
+    void onReject(const std::string & reason) const;
+    void onCancel() const;
+    void onTradeQuantity(const Quantity & tradedQuantity, const Price & tradedPrice);
     
   private:
     std::shared_ptr<Order> _order;
     std::shared_ptr<OrderListener> _orderListener;
     Quantity _openQuantity;
     Quantity _tradedQuantity;
+    Price _cashValue;
   };
 }
 

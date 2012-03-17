@@ -6,13 +6,15 @@ trading::OrderStatus::OrderStatus(const OrderId & orderId,
                                   const std::string & text,
                                   const Quantity & initialQuantity,
                                   const Quantity & filledQuantity,
-                                  const Quantity & remainingQuantity):
+                                  const Quantity & remainingQuantity,
+                                  const Price & cashValue):
   _orderId(orderId),
   _status(status),
   _text(text),
   _initialQuantity(initialQuantity),
   _filledQuantity(filledQuantity),
-  _remainingQuantity(remainingQuantity)
+  _remainingQuantity(remainingQuantity),
+  _cashValue(cashValue)
 {
 }
 
@@ -46,6 +48,11 @@ trading::Quantity trading::OrderStatus::getRemainingQuantity() const
   return _remainingQuantity;
 }
 
+trading::Price trading::OrderStatus::getCashValue() const
+{
+  return _cashValue;
+}
+
 bool trading::OrderStatus::operator==(const OrderStatus & orderStatus) const
 {
   return(_orderId == orderStatus._orderId &&
@@ -53,5 +60,19 @@ bool trading::OrderStatus::operator==(const OrderStatus & orderStatus) const
          _text == orderStatus._text &&
          _initialQuantity == orderStatus._initialQuantity &&
          _filledQuantity == orderStatus._filledQuantity &&
-         _remainingQuantity == orderStatus._remainingQuantity);
+         _remainingQuantity == orderStatus._remainingQuantity &&
+         _cashValue == orderStatus._cashValue);
+}
+
+std::ostream & trading::operator<<(std::ostream & str, const OrderStatus & orderStatus)
+{
+  str << "[OrderStatus OrderId=" << orderStatus.getOrderId()
+      << " Status=" << orderStatus.getStatus()
+      << " Text='" << orderStatus.getText() 
+      << "` InitialQuantity=" << orderStatus.getInitialQuantity()
+      << " FilledQuantity=" << orderStatus.getFilledQuantity()
+      << " RemainingQuantity=" << orderStatus.getRemainingQuantity()
+      << " CashValue=" << orderStatus.getCashValue() 
+      << "]";
+  return str;
 }

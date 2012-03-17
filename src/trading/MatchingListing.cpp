@@ -35,21 +35,38 @@ void trading::MatchingListing::doAddOrder(const OrderInfo & orderInfo)
   if(orderInfo.getOrder()->getInstrumentId() == _instrumentId)
   {  
     _orderRegister.insertOrder(orderInfo);
-    orderInfo.getOrderListener()->onOrderStatus(OrderStatus(orderInfo.getOrder()->getOrderId(),
-                                                            OrderStatus::ACCEPTED,
-                                                            "Accepted",
-                                                            orderInfo.getOrder()->getQuantity(),
-                                                            orderInfo.getTradedQuantity(),
-                                                            orderInfo.getOpenQuantity()));
+    orderInfo.onInsert();
+    
+    // Try to match the opposite price
+    OrderInfo aggressor(orderInfo);
+    OrderInfo initiator;
+
+    while(aggressor.getOpenQuantity() > Quantity(0) &&
+          _orderRegister.getBest(Side::reverse(aggressor.getOrder()->getSide()), initiator) &&
+          isMatching(aggressor, initiator))
+    {
+      match(aggressor, initiator);
+      if(initiator.getOpenQuantity() == Quantity(0))
+      {
+        _orderRegister.eraseOrder(initiator.getOrder()->getOrderId());
+      }
+      else
+      {
+        assert(initiator.getOpenQuantity() > Quantity(0));
+        assert(aggressor.getOpenQuantity() == Quantity(0));
+        _orderRegister.eraseOrder(initiator.getOrder()->getOrderId());
+        _orderRegister.insertOrder(initiator);
+        break;
+      }
+    }
+    if(aggressor.getOpenQuantity() > Quantity(0))
+    {
+      _orderRegister.insertOrder(aggressor);
+    }
   }
   else
   {
-    orderInfo.getOrderListener()->onOrderStatus(OrderStatus(orderInfo.getOrder()->getOrderId(),
-                                                            OrderStatus::ERRORED,
-                                                            "InstrumentId mismatch",
-                                                            Quantity(0),
-                                                            Quantity(0),
-                                                            Quantity(0)));
+    orderInfo.onReject("InstrumentId mismatch");
   }
 }
 
@@ -58,12 +75,7 @@ void trading::MatchingListing::doCancelOrder(const OrderId & orderId)
   OrderInfo orderInfo;
   if(_orderRegister.removeOrder(orderId, orderInfo))
   {
-    orderInfo.getOrderListener()->onOrderStatus(OrderStatus(orderId,
-                                                            OrderStatus::CANCELLED,
-                                                            "Cancelled",
-                                                            orderInfo.getOrder()->getQuantity(),
-                                                            orderInfo.getTradedQuantity(),
-                                                            orderInfo.getOpenQuantity()));
+    orderInfo.onCancel();
   }
 }
 
@@ -78,7 +90,7 @@ void trading::MatchingListing::match(OrderInfo & aggressor, OrderInfo & initiato
 {
   assert(aggressor.getOrder()->getSide() != initiator.getOrder()->getSide());
   Quantity tradedQuantity = std::min(aggressor.getOpenQuantity(), initiator.getOpenQuantity());
-  //Price price = initiator.getOrder()->getPrice();
-  aggressor.tradeQuantity(tradedQuantity);
-  initiator.tradeQuantity(tradedQuantity);
+  Price price = initiator.getOrder()->getPrice();
+  aggressor.onTradeQuantity(tradedQuantity, price);
+  initiator.onTradeQuantity(tradedQuantity, price);
 }
